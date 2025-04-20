@@ -1,0 +1,28 @@
+{
+  "name": "ptsc-website",
+  "version": "1.0.0",
+  "description": "\"This repo store the backen side of the PTSC(The programming club of the Kamala Nehru Institute of technology).",
+  "main": "app.js",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "nodemon src/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coder-writes/PTSC-website.git"
+  },
+  "author": "\\",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/coder-writes/PTSC-website/issues"
+  },
+  "homepage": "https://github.com/coder-writes/PTSC-website#readme",
+  "dependencies": {
+    "axios": "^1.8.4",
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0",
+    "mongoose": "^8.13.2",
+    "node-cron": "^3.0.3",
+    "validator": "^13.15.0"
+  }
+}
