@@ -76,8 +76,6 @@ const validateCodeChefCodingPlatform = async (req) => {
     }
 }
 
-
-
 const checkLeetCodeProfileExists = async (username) => {
   if (!username || typeof username !== 'string') {
     return false;
@@ -109,6 +107,7 @@ const checkLeetCodeProfileExists = async (username) => {
     return false;
   }
 };
+
 
 const validateLeetCodeCodingPlatform = async (req) => { 
     const { leetcodeId } = req.body;

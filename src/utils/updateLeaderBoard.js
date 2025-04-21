@@ -67,8 +67,8 @@ const getLeetCodeUserStats = async (username) => {
       valid: true,
       username,
       totalSolved,
-      rating: contestInfo.rating || 'N/A',
-      globalRanking: contestInfo.globalRanking || 'N/A',
+      rating: contestInfo.rating || 0,
+      globalRanking: contestInfo.globalRanking || 0,
       contestsAttended: contestInfo.attendedContestsCount || 0,
     };
   } catch (err) {
@@ -82,7 +82,7 @@ const getGfgData = async (gfgId) => {
   try {
     const response = await axios.get(gfgUrl);
     if (response.status === 200) {
-      console.log(response.data.info.totalProblemsSolved);
+      // console.log(response.data.info.totalProblemsSolved);
       return response.data.info.totalProblemsSolved;
     } else {
       throw new Error('Invalid GFG ID');
@@ -110,7 +110,7 @@ const getCodeForcesData = async (codeforcesId) => {
     const response = await axios.get(codeforcesUrl);
     if (response.status === 200) {
       const ratingcf1 = await response.data.result[response.data.result.length - 1].newRating;
-      console.log(ratingcf1);
+      return ratingcf1;
     } else {
       throw new Error('Invalid Codeforces ID');
     }
@@ -130,7 +130,7 @@ const getCodeChefData = async (codechefId) => {
         const ratingMatch = html.match(/<div class="rating-number">(\d+)<\/div>/);
         if (ratingMatch) {
           const ratingcc = parseInt(ratingMatch[1], 10);
-          console.log(ratingcc);
+          // console.log(ratingcc);
           return ratingcc;
         } else {
           throw new Error('Unable to extract CodeChef rating');
@@ -146,7 +146,13 @@ const getCodeChefData = async (codechefId) => {
   }
 }
 
+getLeetcodeData("Abdul_Saleem");
+module.exports = {
+  getGfgData,
+  getLeetcodeData,
+  getCodeForcesData,
+  getCodeChefData
+};
 
-getLeetcodeData("risshi-codes");
-getCodeChefData("codewithrishi3");
-getCodeForcesData("rishi_sde");
+// getCodeChefData("codewithrishi3");
+// getCodeForcesData("rishi_sde");

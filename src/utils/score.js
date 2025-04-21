@@ -19,35 +19,46 @@ const normalize = async (value, min, max) => {
 
 const calculateStudentScore = async (student) => {
 
-  let finalScore = 0;
-      for (const metric in weights) {
-        const { min, max } = fixedMinMax[metric];
-        const value = student[metric] || 0; // Default to 0 if undefined
-        const normalized = normalize(value, min, max);
-        finalScore += (normalized * (weights[metric] / 100));
-      }
-    
-      return parseFloat(finalScore.toFixed(2)); // Return score rounded to 2 decimal places
+  try{
+
+    let finalScore = 0;
+    for (const metric in weights) {
+      const { min, max } = await fixedMinMax[metric];
+      const value = await student[metric] || 0; // Default to 0 if undefined
+      const normalized = await normalize(value, min, max);
+      finalScore +=  (normalized * (weights[metric] / 100));
     }
+    
+    return parseFloat(finalScore.toFixed(2)); // Return score rounded to 2 decimal places
+  }
+  catch(err){
+    console.log(err.message);
+    throw new Error("Error calculating score: " + err.message);
+  }
+}
   
 
 
-///smaple Data for the student verfication
+// /smaple Data for the student verfication
 
-  // const studentData = {
-  //   problemsCountgfg: 444,
-  //   ratingcf: 1122,
-  //   ratingcc: 1588,
-  //   problemsCountlc: 698,
-  //   ratinglc: 1616.8320734108756,
-  // };
-  // const score = calculateStudentScore(studentData);
-  // console.log("Student Score:", score);
-  
+//   const studentData = {
+//     problemsCountgfg: 444,
+//     ratingcf: 1122,
+//     ratingcc: 1588,
+//     problemsCountlc: 698,
+//     ratinglc: 1616.8320734108756,
+//   };
+
+// calculateStudentScore(studentData).then((score) => {
+//     console.log("Student Score:", score); // Example output: Student Score: 85.00
+// })
+//   .catch((error) => {
+//     console.error("Error:", error.message);
+//   });
 
 module.exports = {
   calculateStudentScore,
-  fixedMinMax,
+  normalize,
   weights,
-  normalize
+  fixedMinMax,
 }
