@@ -146,7 +146,7 @@ const getCodeChefData = async (codechefId) => {
   }
 }
 
-getLeetcodeData("Abdul_Saleem");
+// getLeetcodeData("Abdul_Saleem");
 module.exports = {
   getGfgData,
   getLeetcodeData,

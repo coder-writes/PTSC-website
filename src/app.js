@@ -58,6 +58,7 @@ app.post('/leaderboard/update', async (req, res) => {
                 ratingcc: ratingcc,
                 problemsCountlc: problemsCountlc,
                 ratinglc: ratinglc,
+                rank: 0,
             };
             // var studentScore = 0;
             const score = await new Promise((resolve, reject) => {
@@ -98,6 +99,52 @@ app.post('/leaderboard/update', async (req, res) => {
     }
 });
 
+
+app.post('/leaderboard/refresh', async(req,res)=>{
+    try{
+        const allStudents = await Leaderboard.find().sort({ score: -1 });
+
+        const updadtedRanks = allStudents.map((student, index) => ({
+            updateOne: {
+                filter: {_id: student._id},
+                update:{
+                    $set: {
+                        rank: index + 1,
+                    },
+                }
+            }
+        }));
+            await Leaderboard.bulkWrite(updadtedRanks);
+            res.status(200).send({
+                message: "The leaderboard is Refreshed Succesfully",
+                data: updadtedRanks,
+            })  
+    }catch(err){
+        res.status(500).send({
+            message: "Internal Server Error: " + err.message
+        })
+    }
+})
+
+app.get("/leaderboard" , async(req,res) =>{
+    try{
+
+        const page = parseInt(req.query.page) || 1;
+        let limit = parseInt(req.query.limit) || 10;
+        limit = Math.min(limit, 50);
+        const skip = (page - 1) * limit;
+        
+        const leaderboardStudents = await Leaderboard.find().populate("studentId" , "firstName lastName" ).sort({ score: -1 }).skip(skip).limit(limit);
+
+        if(leaderboardStudents){
+            res.status(200).send({
+                leaderboardStudents
+            })
+        }
+    }catch(err){
+        res.status(500).send( "Internal Server Error: " + err.message);
+    }
+})
 
 
 connectDb().then(() => {
