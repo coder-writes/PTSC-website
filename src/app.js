@@ -9,27 +9,21 @@ const { calculateStudentScore, weights, fixedMinMax, normalize } = require('./ut
 app.use(express.json());
 
 
-
 app.post('/leaderboard/add', async (req, res) => {
     try {
         const validationResultgfg = await validategfgCodingPlatform(req);
         const validationResultCodeForces = await validateCodeForcesCodingPlatform(req);
         const validateResultCodeChef = await validateCodeChefCodingPlatform(req);
         const validateResultLeetcode = await validateLeetCodeCodingPlatform(req);
-        // const student_info = req.body;
-
-        // console.log(validationResult);
         if (validationResultgfg && validationResultCodeForces && validateResultCodeChef && validateResultLeetcode) {
-            console.log("inside if block");
             const student = new Student(req.body);
             await student.save();
             res.status(200).json({
-                message: "Student added successfully",
+                message: "You are added successfully. Pleade wait 12 hours for the leaderboard to be updated",
                 student: req.body
             });
         }
     } catch (err) {
-        console.log(err.message);
         res.status(500).send("Internal Server Error: " + err.message);
     }
 
@@ -42,7 +36,6 @@ app.post('/leaderboard/update', async (req, res) => {
         const updateLeaderBoard = [];
         for (const student of students) {
             const ObjectId = student._id;
-            // console.log(student.gfgId);
             const problemsCountgfg = await getGfgData(student.gfgId);
             const problemsCountlc = (await getLeetcodeData(student.leetcodeId)).totalSolved;
             const ratinglc = (await getLeetcodeData(student.leetcodeId)).rating;
@@ -99,11 +92,9 @@ app.post('/leaderboard/update', async (req, res) => {
     }
 });
 
-
 app.post('/leaderboard/refresh', async(req,res)=>{
     try{
         const allStudents = await Leaderboard.find().sort({ score: -1 });
-
         const updadtedRanks = allStudents.map((student, index) => ({
             updateOne: {
                 filter: {_id: student._id},
@@ -117,7 +108,7 @@ app.post('/leaderboard/refresh', async(req,res)=>{
             await Leaderboard.bulkWrite(updadtedRanks);
             res.status(200).send({
                 message: "The leaderboard is Refreshed Succesfully",
-                data: updadtedRanks,
+                data: allStudents
             })  
     }catch(err){
         res.status(500).send({
@@ -133,13 +124,14 @@ app.get("/leaderboard" , async(req,res) =>{
         let limit = parseInt(req.query.limit) || 10;
         limit = Math.min(limit, 50);
         const skip = (page - 1) * limit;
-        
-        const leaderboardStudents = await Leaderboard.find().populate("studentId" , "firstName lastName" ).sort({ score: -1 }).skip(skip).limit(limit);
-
+        const leaderboardStudents = await Leaderboard.find().populate("studentId","firstName lastName").sort({ score: -1 }).skip(skip).limit(limit);
         if(leaderboardStudents){
-            res.status(200).send({
-                leaderboardStudents
-            })
+            const result = leaderboardStudents.map(student => ({
+                name: student.studentId.firstName + " " + student.studentId.lastName,
+                rank: student.rank,
+                score: student.score,
+            }));
+            res.status(200).send(result);
         }
     }catch(err){
         res.status(500).send( "Internal Server Error: " + err.message);

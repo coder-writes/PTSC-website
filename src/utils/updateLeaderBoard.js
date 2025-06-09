@@ -128,8 +128,8 @@ const getCodeChefData = async (codechefId) => {
       const html = response.data.toLowerCase();
       if (html.includes(codechefId.toLowerCase())) {
         const ratingMatch = html.match(/<div class="rating-number">(\d+)<\/div>/);
-        if (ratingMatch) {
-          const ratingcc = parseInt(ratingMatch[1], 10);
+        if (ratingMatch && ratingMatch[1]) {
+          const ratingcc = parseInt(ratingMatch[1], 10) || 0;
           // console.log(ratingcc);
           return ratingcc;
         } else {
@@ -154,5 +154,3 @@ module.exports = {
   getCodeChefData
 };
 
-// getCodeChefData("codewithrishi3");
-// getCodeForcesData("rishi_sde");

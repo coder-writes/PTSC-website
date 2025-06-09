@@ -76,7 +76,6 @@ const studentSchema = new Schema({
         required: true,
         unique: true,
     } 
-
 },
 {
     timestamps: true
